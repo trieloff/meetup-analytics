@@ -24,6 +24,5 @@ do
         echo "$MEETUP_NAME\t$MEETUP_CITY\t$MEETUP_MEMBERS\t$MEETUP_URL\t$topic"
       fi
     done
-    exit
   done
 done
