@@ -19,6 +19,5 @@ do
       MEETUP_MEMBERS=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1" 2>/dev/null | jq -r ".[0].members")
       echo "$MEETUP_NAME\t$MEETUP_CITY\t$MEETUP_MEMBERS\t$MEETUP_URL\t$topic"
     fi
-    exit
   done
 done
