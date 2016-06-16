@@ -11,22 +11,19 @@ do
     LOCATION=$(echo $location)
     #echo "Getting $TOPIC_NAME Meetups in $LOCATION"
     #echo curl "https://api.meetup.com/find/groups?location=$location&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1"
-    MEETUP_URL=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1" 2>/dev/null | jq -r ".[0].link")
-    if [[ "$MEETUP_URL" != "null" ]]
-    then
-      MEETUP_NAME=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1" 2>/dev/null | jq -r ".[0].name")
-      MEETUP_CITY=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1" 2>/dev/null | jq -r ".[0].city")
-      MEETUP_MEMBERS=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1" 2>/dev/null | jq -r ".[0].members")
-      echo "$MEETUP_NAME\t$MEETUP_CITY\t$MEETUP_MEMBERS\t$MEETUP_URL\t$topic"
-    fi
-    MEETUP_URL=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=1" 2>/dev/null | jq -r ".[0].link")
-    if [[ "$MEETUP_URL" != "null" ]]
-    then
-      MEETUP_NAME=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=1" 2>/dev/null | jq -r ".[0].name")
-      MEETUP_CITY=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=1" 2>/dev/null | jq -r ".[0].city")
-      MEETUP_MEMBERS=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=1" 2>/dev/null | jq -r ".[0].members")
-      echo "$MEETUP_NAME\t$MEETUP_CITY\t$MEETUP_MEMBERS\t$MEETUP_URL\t$topic"
-    fi
+    for i in $(seq 1 $2)
+    do
+      let "page = $i"
+      let "offset = $i - 1"
+      MEETUP_URL=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=$offset" 2>/dev/null | jq -r ".[0].link")
+      if [[ "$MEETUP_URL" != "null" ]]
+      then
+        MEETUP_NAME=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=$offset" 2>/dev/null | jq -r ".[0].name")
+        MEETUP_CITY=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=$offset" 2>/dev/null | jq -r ".[0].city")
+        MEETUP_MEMBERS=$(curl "https://api.meetup.com/find/groups?location=$LOCATION&radius=1&topic_id=$TOPIC_ID&order=members&key=$1&page=1&offset=$offset" 2>/dev/null | jq -r ".[0].members")
+        echo "$MEETUP_NAME\t$MEETUP_CITY\t$MEETUP_MEMBERS\t$MEETUP_URL\t$topic"
+      fi
+    done
     exit
   done
 done
